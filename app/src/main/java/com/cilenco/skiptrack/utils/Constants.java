@@ -5,6 +5,7 @@ public interface Constants {
     int PERMISSION_REQUEST_ID = 1001;
 
     String PREF_PERMISSION = "pref_permission";
+    String HUAWEI_CHECK = "huawei_check";
 
     String PREF_SCREEN_ON = "pref_screen_off";
     String PREF_HIDE_ICON = "pref_hide_icon";

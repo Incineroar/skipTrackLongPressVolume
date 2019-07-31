@@ -36,4 +36,6 @@
 
     <string name="msg_media_next">Next song</string>
     <string name="msg_media_pre">Previous song</string>
+    <string name="huawei_title">EMUI Warning</string>
+    <string name="huawei_text">It appears you are using a Huawei device. EMUI has aggressive battery saving functions that may interfere with the operation of this app. To fix this, you must manually manage App Launches for this app. Would you like to be taken there to fix this issue?\n\nThis message will only appear once. You can access these settings anytime from within this app.</string>
 </resources>
