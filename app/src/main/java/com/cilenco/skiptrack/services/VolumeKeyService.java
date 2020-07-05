@@ -1,5 +1,8 @@
 package com.cilenco.skiptrack.services;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.session.MediaSessionManager;
 import android.os.Handler;
@@ -32,6 +35,9 @@ import static com.cilenco.skiptrack.utils.Constants.PREF_PERMISSION;
 import static com.cilenco.skiptrack.utils.Constants.PREF_SCREEN_ON;
 
 public class VolumeKeyService extends NotificationListenerService implements MediaSessionManager.OnVolumeKeyLongPressListener, OnTrayPreferenceChangeListener {
+    
+    private static final String PERMISSION = Manifest.permission.SET_VOLUME_KEY_LONG_PRESS_LISTENER;
+
     //Add a reference for a vibrator, as well as for the import.
     //Don't forget the manifest declaration to use the vibrator or it will not work.
     Vibrator vibrator;
@@ -42,7 +48,7 @@ public class VolumeKeyService extends NotificationListenerService implements Med
     private PowerManager powerManager;
     private AudioManager audioManager;
 
-    private Handler mHandler;
+    private Handler mHandler=null;
 
     private boolean debugEnabled;
     private boolean prefScreenOn;
@@ -51,6 +57,8 @@ public class VolumeKeyService extends NotificationListenerService implements Med
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Log.d("cilenco", "VolumeKeyService: onCreate");
 
         //get the vibrator from system
         vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
@@ -62,11 +70,42 @@ public class VolumeKeyService extends NotificationListenerService implements Med
         powerManager = getSystemService(PowerManager.class);
 
         mediaSessionManager = getSystemService(MediaSessionManager.class);
-        mHandler = new Handler();
+
+
+        int permission = checkSelfPermission(PERMISSION);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            //requestPermissions(new String[]{PERMISSION}, 1);
+            Log.i("cilenco", "VolumeKeyService: permission NOT granted");
+        }else {
+
+            preferences.put(PREF_PERMISSION, true);
+        }
+
+
+    }
+
+    private Handler getHandler() {
+        if(mHandler==null) {
+            mHandler = new Handler();
+        }
+        return mHandler;
+    }
+
+    @Override
+    public void onStart(Intent intent, int startid)
+    {
+        Log.i("cilenco", "VolumeKeyService: onStart");
+        startService();
     }
 
     @Override
     public void onTrayPreferenceChanged(Collection<TrayItem> items) {
+        Log.d("cilenco", "VolumeKeyService: onTrayPreferenceChanged");
+        startService();
+    }
+
+    private void startService() {
         boolean permission = preferences.getBoolean(PREF_PERMISSION, false);
         boolean serviceEnabled = preferences.getBoolean(PREF_ENABLED, false);
 
@@ -75,13 +114,14 @@ public class VolumeKeyService extends NotificationListenerService implements Med
         prefNoMedia = preferences.getBoolean(PREF_NO_MEDIA, false);
 
         if(serviceEnabled && permission) {
-            mediaSessionManager.setOnVolumeKeyLongPressListener(this, mHandler);
+            mediaSessionManager.setOnVolumeKeyLongPressListener(this, getHandler());
             Log.d("cilenco", "Registered VolumeKeyListener");
         } else {
             mediaSessionManager.setOnVolumeKeyLongPressListener(null, null);
             Log.d("cilenco", "Unregistered VolumeKeyListener");
         }
     }
+
 
     @Override
     public void onDestroy() {
@@ -139,6 +179,6 @@ public class VolumeKeyService extends NotificationListenerService implements Med
 
         mediaSessionManager.setOnVolumeKeyLongPressListener(null, null);
         mediaSessionManager.dispatchVolumeKeyEvent(keyEvent, audioManager.getUiSoundsStreamType(), false);
-        mediaSessionManager.setOnVolumeKeyLongPressListener(this, mHandler);
+        mediaSessionManager.setOnVolumeKeyLongPressListener(this, getHandler());
     }
 }
