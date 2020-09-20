@@ -29,4 +29,7 @@
 
     <string name="msg_media_next">Nächster song</string>
     <string name="msg_media_pre">Vorheriger song</string>
+    <string name="huawei_title">EMUI Warnung</string>
+    <string name="huawei_text">Anscheinend verwenden Sie ein Huawei-Gerät. EMUI verfügt über aggressive Batteriesparfunktionen, die den Betrieb dieser App beeinträchtigen können. Um dies zu beheben, müssen Sie App-Starts für diese App manuell verwalten. Möchten Sie dorthin gebracht werden, um dieses Problem zu beheben? \ N \ nDiese Meldung wird nur einmal angezeigt. Sie können jederzeit über diese App auf diese Einstellungen zugreifen.</string>
+   
 </resources>

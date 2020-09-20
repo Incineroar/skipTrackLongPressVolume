@@ -16,6 +16,13 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
+
+        <receiver android:name=".receivers.AutostartReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".ui.activities.MainActivity"
             android:label="@string/app_name" />
@@ -40,6 +47,7 @@
         </activity>
 
         <service
+            android:enabled="true" 
             android:name=".services.VolumeKeyService"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
             android:process=":skipTrackService"
